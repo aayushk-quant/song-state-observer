@@ -1,0 +1,28 @@
+# Superseded scratch script (now split into src/models.py)
+forwardbackward.py
+
+# Audio data — copyrighted, never commit. Keep the folder, drop the contents.
+data/raw/*
+!data/raw/.gitkeep
+*.flac
+*.wav
+*.mp3
+*.m4a
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ipynb_checkpoints/
+.vscode/
+
+# Environments
+.venv/
+venv/
+env/
+
+# macOS
+.DS_Store
