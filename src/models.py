@@ -56,7 +56,13 @@ def posteriors_log(log_alpha, log_beta, log_A, log_B, log_likelihood):
     for t in range(T - 1):
         for i in range(K):
             for j in range(K):
-                log_xi[t, i, j] = log_alpha[t, i] + log_A[i, j] + log_B[t+1, j] + log_beta[t+1, j] - log_likelihood
+                log_xi[t, i, j] = (
+                 log_alpha[t, i] + 
+                 log_A[i, j] + 
+                 log_B[t+1, j] + 
+                 log_beta[t+1, j] - 
+                 log_likelihood
+                )
 
     return log_gamma, log_xi
 
@@ -75,7 +81,9 @@ def compute_log_B(observations, means, vars_):
         raise ValueError("vars_ must have the same shape as means.")
 
     if observations.shape[1] != means.shape[1]:
-        raise ValueError("observations and means must have the same number of features.")
+        raise ValueError(
+            "observations and means must have the same number of features."
+            )
     
     T = observations.shape[0]
     K = means.shape[0]
@@ -96,10 +104,12 @@ def m_step(gamma, xi, observations, var_floor=1e-6):
     D = observations.shape[1]
 
     if observations.shape[0] != T:
-        raise ValueError('gamma and observations must have same number of frames')
+        raise ValueError(
+            "gamma and observations must have same number of frames"
+            )
     
     if xi.shape != (T - 1, K, K):
-        raise ValueError(f'xi must have shape {(T - 1, K, K)}')
+        raise ValueError(f"xi must have shape {(T - 1, K, K)}")
     
     pi = gamma[0].copy()
     xi_sum = xi.sum(axis=0)
