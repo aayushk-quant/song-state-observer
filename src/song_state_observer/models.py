@@ -113,9 +113,13 @@ def m_step(gamma, xi, observations, var_floor=1e-6):
     
     pi = gamma[0].copy()
     xi_sum = xi.sum(axis=0)
+    row_totals = xi_sum.sum(axis = 1, keepdims=True)
+    if np.any(row_totals <= 1e-12):
+        raise ValueError("Dead state: zero expected transition count. Retry with a new seed.")
     A = xi_sum / xi_sum.sum(axis=1, keepdims=True)
     Nk = gamma.sum(axis = 0)
-
+    if np.any(Nk <= 1e-12):
+        raise ValueError("Dead state: zero occupancy. Retry with a new seed.")
     means = gamma.T @ observations / Nk[:, None]
 
     vars_ = np.empty((K, D))
@@ -182,10 +186,11 @@ def fit_from_initial_params(
 
         ll_history.append(ll)
 
-        assert ll >= previous_ll - 1e-6, (
-            f"LL decreased at iteration {iteration}: "
-            f"{previous_ll} -> {ll}"
-        )
+        if ll < previous_ll - 1e-6:
+            raise RuntimeError(
+                f"Likelihood decreased at iteration {iteration}: "
+                f"{previous_ll} -> {ll}. This indicates a bug in the M-step."
+            )
 
         if (
             iteration > 0

@@ -14,7 +14,7 @@ def load_audio(path, sr = 22050, mono = True):
     return y, actual_sr
 
 def _fine_features(y, sr, n_fft = 2048, hop_length = 512):
-    y = np.asarray(y, dtype = float)
+    y = np.asarray(y, dtype = np.float32)
     if y.ndim != 1:
         raise ValueError("Expected a 1-D waveform.")
     
@@ -53,8 +53,8 @@ def _aggregate_to_windows(values, sr, hop_length, win = 1.0, hop = 0.5):
     return out
 
 def extract_features(path, sr = 22050, n_fft = 2048, hop_length = 512, win = 1.0, hop = 0.5, eps = 1e-8):
-    y, sr = load_audio(path)
-    f = _fine_features(y, sr)
+    y, sr = load_audio(path, sr = sr)
+    f = _fine_features(y, sr, n_fft = n_fft, hop_length = hop_length)
     aggregated = {
         name: _aggregate_to_windows(series, sr=sr, hop_length=hop_length, win=win, hop=hop)
         for name, series in f.items()
@@ -67,3 +67,7 @@ def extract_features(path, sr = 22050, n_fft = 2048, hop_length = 512, win = 1.0
 
     features = np.column_stack([log_rms, centroid, flatness, delta_log_rms, delta_flatness])
     return features
+
+f_default = extract_features("data/raw/sleep.flac")                    # hop_length=512
+f_coarse  = extract_features("data/raw/sleep.flac", hop_length=1024)   # double the hop
+print(f_default.shape, f_coarse.shape)

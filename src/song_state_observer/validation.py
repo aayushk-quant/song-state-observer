@@ -5,7 +5,7 @@ from song_state_observer.models import fit, compute_log_B, viterbi_log
 
 
 
-Z, _, _ = standardise(extract_features("data/raw/sleep.flac"))
+Z, _, _ = standardise(extract_features("data/raw/beautiful_world.flac"))
 result = fit(Z, K=3, seed=0)
 log_B = compute_log_B(Z, result["means"], result["vars"])
 with np.errstate(divide="ignore"):
