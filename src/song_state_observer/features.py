@@ -67,7 +67,3 @@ def extract_features(path, sr = 22050, n_fft = 2048, hop_length = 512, win = 1.0
 
     features = np.column_stack([log_rms, centroid, flatness, delta_log_rms, delta_flatness])
     return features
-
-f_default = extract_features("data/raw/sleep.flac")                    # hop_length=512
-f_coarse  = extract_features("data/raw/sleep.flac", hop_length=1024)   # double the hop
-print(f_default.shape, f_coarse.shape)

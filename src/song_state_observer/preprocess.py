@@ -1,7 +1,7 @@
 import numpy as np
 
 def standardise(X, eps = 1e-8):
-    X = np.asarray(X)
+    X = np.asarray(X, dtype = float)
 
     if  X.ndim != 2:
         raise ValueError("features must have shape (T, D).")
